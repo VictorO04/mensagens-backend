@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import mensagensRoutes from "./routes/mensagemRoutes.js";
 
 dotenv.config();
 
@@ -14,11 +15,14 @@ app.get("/", (req, res) => {
     });
 });
 
+app.use("/api/mensagens", mensagensRoutes);
+
 app.use((req, res) => {
     res.status(404).json({
         erro: "Rota não encontrada"
     });
 })
+
 
 app.listen(PORTA, () => {
     console.log(`Servidor aberto em: http://localhost:${PORTA}`);
