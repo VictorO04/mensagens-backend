@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import mensagensRoutes from "./routes/mensagemRoutes.js";
+import usuarioRoutes from "./routes/usuarioRoutes.js"
+import mensagemRoutes from "./routes/mensagemRoutes.js";
 
 dotenv.config();
 
@@ -15,7 +16,8 @@ app.get("/", (req, res) => {
     });
 });
 
-app.use("/api/mensagens", mensagensRoutes);
+app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/mensagens", mensagemRoutes);
 
 app.use((req, res) => {
     res.status(404).json({
