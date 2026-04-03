@@ -16,7 +16,7 @@ model Usuario {
 
   mensagens Mensagem[]
 
-  @@map("Usuarios")
+  @@map("usuarios")
 }
 
 model Mensagem {
