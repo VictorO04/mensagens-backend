@@ -1,5 +1,6 @@
 import UsuarioModel from "../models/UsuarioModel.js";
 import erroServidor from "../utils/erroServidor.js";
+import idValido from "../utils/idValido.js";
 
 export const postUsuario = async (req, res) => {
     try {
@@ -34,8 +35,8 @@ export const postUsuario = async (req, res) => {
             });
         }
 
-        const novoUsuario = new UsuarioModel({ nome, email, senha, anonimo });
-        const usuario = await novoUsuario.criarUsuario();
+        const novoUsuario = new UsuarioModel({ nome, email, anonimo });
+        const usuario = await novoUsuario.criarUsuario(senha);
 
         res.status(201).json({
             mensagem: "Usuário criado com sucesso",
@@ -54,6 +55,33 @@ export const getUsuarios = async (req, res) => {
             mensagem: "Usuários encontrados com sucesso",
             usuarios
         });
+    } catch (error) {
+        erroServidor(res, error);
+    }
+}
+
+export const getUsuario = async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+
+      if (!idValido(id)) {
+        return res.status(400).json({
+            erro: "Digite um ID válido"
+        });
+      }
+
+      const usuario = await UsuarioModel.buscarUsuarioPorId(id);
+
+      if (!usuario) {
+        return res.status(404).json({
+            erro: "Usuário não encontrado"
+        });
+      }
+
+      res.status(200).json({
+        mensagem: "Usuário encontrado com sucesso",
+        usuario
+      });
     } catch (error) {
         erroServidor(res, error);
     }

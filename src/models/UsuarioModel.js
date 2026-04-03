@@ -2,17 +2,16 @@ import bcrypt from "bcrypt";
 import prisma from "../../lib/prisma.js";
 
 export default class UsuarioModel {
-    constructor({ id = null, nome, email, senha = null, anonimo = false, dataCadastro = null }) {
+    constructor({ id = null, nome, email, anonimo = false, dataCadastro = null }) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.senha = senha;
         this.anonimo = anonimo;
         this.dataCadastro = dataCadastro;
     }
 
-    async criarUsuario() {
-        const senhaHash = await bcrypt.hash(this.senha, 10);
+    async criarUsuario(senha) {
+        const senhaHash = await bcrypt.hash(senha, 10);
 
         return prisma.usuario.create({
             data: {
@@ -41,6 +40,25 @@ export default class UsuarioModel {
                 dataCadastro: true
             }
         });
+    }
+
+    static async buscarUsuarioPorId(id) {
+        const usuario = await prisma.usuario.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                nome: true,
+                email: true,
+                anonimo: true,
+                dataCadastro: true
+            }
+        });
+
+        if (!usuario) {
+            return null;
+        }
+
+        return new UsuarioModel(usuario);
     }
 
     static async buscarPorEmail(email) {
